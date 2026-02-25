@@ -8,13 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama    = trim($_POST['nama']    ?? '');
     $jurusan = trim($_POST['jurusan'] ?? '');
 
-    // Validasi server-side
     if (empty($npm) || empty($nama) || empty($jurusan)) {
         $error = 'Semua field wajib diisi.';
     } elseif (!preg_match('/^\d{10,12}$/', $npm)) {
         $error = 'NPM harus berupa 10–12 digit angka.';
     } else {
-        // Cek NPM duplikat
+    
         $cek = $pdo->prepare("SELECT id FROM mahasiswa WHERE npm = ?");
         $cek->execute([$npm]);
         if ($cek->fetch()) {

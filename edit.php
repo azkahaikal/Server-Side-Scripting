@@ -3,7 +3,6 @@ require 'connection.php';
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-// Ambil data mahasiswa
 $stmt = $pdo->prepare("SELECT * FROM mahasiswa WHERE id = ?");
 $stmt->execute([$id]);
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!preg_match('/^\d{10,12}$/', $npm)) {
         $error = 'NPM harus berupa 10–12 digit angka.';
     } else {
-        // Cek NPM duplikat (selain id ini sendiri)
+
         $cek = $pdo->prepare("SELECT id FROM mahasiswa WHERE npm = ? AND id != ?");
         $cek->execute([$npm, $id]);
         if ($cek->fetch()) {
@@ -40,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Perbarui preview data jika ada error
     $data['npm']     = $npm;
     $data['nama']    = $nama;
     $data['jurusan'] = $jurusan;

@@ -1,14 +1,11 @@
 <?php
 require 'connection.php';
 
-// Ambil parameter pencarian & filter
 $search  = isset($_GET['search'])  ? trim($_GET['search'])  : '';
 $jurusan = isset($_GET['jurusan']) ? trim($_GET['jurusan']) : '';
 
-// Ambil daftar jurusan unik untuk dropdown filter
 $jurusanList = $pdo->query("SELECT DISTINCT jurusan FROM mahasiswa ORDER BY jurusan ASC")->fetchAll(PDO::FETCH_COLUMN);
 
-// Query dinamis dengan filter
 $sql    = "SELECT * FROM mahasiswa WHERE 1=1";
 $params = [];
 
@@ -29,10 +26,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $mahasiswa = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Total semua data
 $total = $pdo->query("SELECT COUNT(*) FROM mahasiswa")->fetchColumn();
 
-// Flash message
 $flash = '';
 if (isset($_GET['success'])) {
     if ($_GET['success'] === 'tambah') $flash = ['type' => 'success', 'msg' => '✓ Data mahasiswa berhasil ditambahkan.'];
@@ -40,7 +35,6 @@ if (isset($_GET['success'])) {
     if ($_GET['success'] === 'hapus')  $flash = ['type' => 'success', 'msg' => '✓ Data mahasiswa berhasil dihapus.'];
 }
 
-// Fungsi warna avatar berdasarkan karakter nama
 function avatarColor($name) {
     $colors = [
         ['#5b8af5','#8b5cf6'], ['#e8c547','#f97316'],
@@ -61,7 +55,6 @@ function avatarColor($name) {
 <body>
 <div class="app-wrapper">
 
-    <!-- HEADER -->
     <header class="site-header animate-in">
         <div>
             <h1 class="site-title">Sistem <span>Akademik</span></h1>
@@ -76,10 +69,9 @@ function avatarColor($name) {
     </div>
     <?php endif; ?>
 
-    <!-- TOOLBAR: SEARCH + FILTER + TAMBAH -->
     <div class="toolbar animate-in" style="animation-delay:0.06s">
         <form method="GET" action="index.php" style="display:flex;gap:12px;flex:1;flex-wrap:wrap;">
-            <!-- Search -->
+      
             <div class="search-wrap">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -94,7 +86,6 @@ function avatarColor($name) {
                 >
             </div>
 
-            <!-- Filter Jurusan -->
             <select name="jurusan" class="filter-select" onchange="this.form.submit()">
                 <option value="">Semua Jurusan</option>
                 <?php foreach ($jurusanList as $j): ?>
@@ -129,10 +120,8 @@ function avatarColor($name) {
         </a>
     </div>
 
-    <!-- TABLE CARD -->
     <div class="table-card animate-in" style="animation-delay:0.1s">
 
-        <!-- Info hasil pencarian -->
         <?php if ($search || $jurusan): ?>
         <div class="results-info">
             Menampilkan <strong><?= count($mahasiswa) ?></strong> hasil
@@ -207,7 +196,7 @@ function avatarColor($name) {
 </div>
 
 <script>
-// Realtime search dengan debounce (opsional enhancement)
+
 const searchInput = document.querySelector('.search-input');
 let debounceTimer;
 if (searchInput) {
